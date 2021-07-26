@@ -9,7 +9,7 @@ import {
 } from '@expo-google-fonts/archivo';
 import React from 'react';
 
-import { Home } from './src/screens';
+import { Home, CarDetails } from './src/screens';
 import { theme } from './src/styles';
 
 const App = () => {
@@ -26,7 +26,8 @@ const App = () => {
   } else {
     return (
       <ThemeProvider theme={theme}>
-        <Home />
+        {/* <Home /> */}
+        <CarDetails />
       </ThemeProvider>
     );
   }

@@ -1,1 +1,2 @@
+export { default as CarDetails } from './CarDetails';
 export { default as Home } from './Home';
