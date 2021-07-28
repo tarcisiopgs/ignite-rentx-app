@@ -1,8 +1,8 @@
 import styled from 'styled-components/native';
 import { TextProps } from 'react-native';
 
-import GasolineSvg from '../../assets/gasoline.svg';
-import EnergySvg from '../../assets/energy.svg';
+import GasolineSvg from '../../assets/gasoline_light.svg';
+import EnergySvg from '../../assets/energy_light.svg';
 import { responsive } from '../../utils';
 
 interface ValueTextProps extends TextProps {

@@ -1,11 +1,15 @@
-import { getStatusBarHeight } from 'react-native-status-bar-height';
 import styled from 'styled-components/native';
+import { ViewProps } from 'react-native';
 
 import LogoSvg from '../../assets/logo.svg';
 import { responsive } from '../../utils';
 
-export const Container = styled.View.attrs({})`
-  padding: ${responsive.getFinalValue(28 + getStatusBarHeight())}px
+interface ContainerProps extends ViewProps {
+  topInset: number;
+}
+
+export const Container = styled.View.attrs({})<ContainerProps>`
+  padding: ${({ topInset }) => responsive.getFinalValue(28 + topInset)}px
     ${responsive.getFinalValue(24)}px ${responsive.getFinalValue(28)}px;
   background-color: ${({ theme }) => theme.colors.dark};
   justify-content: space-between;

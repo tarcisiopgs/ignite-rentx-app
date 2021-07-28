@@ -1,4 +1,5 @@
 import { Inter_400Regular, Inter_500Medium } from '@expo-google-fonts/inter';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from 'styled-components/native';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
@@ -9,7 +10,7 @@ import {
 } from '@expo-google-fonts/archivo';
 import React from 'react';
 
-import { Home, CarDetails } from './src/screens';
+import { Home, CarDetails, CarSchedule } from './src/screens';
 import { theme } from './src/styles';
 
 const App = () => {
@@ -25,10 +26,13 @@ const App = () => {
     return <AppLoading />;
   } else {
     return (
-      <ThemeProvider theme={theme}>
-        {/* <Home /> */}
-        <CarDetails />
-      </ThemeProvider>
+      <SafeAreaProvider>
+        <ThemeProvider theme={theme}>
+          {/* <Home /> */}
+          {/* <CarDetails /> */}
+          <CarSchedule />
+        </ThemeProvider>
+      </SafeAreaProvider>
     );
   }
 };

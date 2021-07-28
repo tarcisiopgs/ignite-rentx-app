@@ -1,3 +1,4 @@
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import { useTheme } from 'styled-components';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
@@ -14,13 +15,17 @@ const MainHeader: React.FC<MainHeaderProps> = ({ totalVehiclesSelected }) => {
   return (
     <>
       <StatusBar style="light" backgroundColor={theme.colors.dark} />
-      <Container>
-        <LogoIcon />
-        <TotalVehiclesText>
-          Total de {totalVehiclesSelected}{' '}
-          {totalVehiclesSelected === 1 ? 'carro' : 'carros'}
-        </TotalVehiclesText>
-      </Container>
+      <SafeAreaInsetsContext.Consumer>
+        {insets => (
+          <Container topInset={insets?.top || 0}>
+            <LogoIcon />
+            <TotalVehiclesText>
+              Total de {totalVehiclesSelected}{' '}
+              {totalVehiclesSelected === 1 ? 'carro' : 'carros'}
+            </TotalVehiclesText>
+          </Container>
+        )}
+      </SafeAreaInsetsContext.Consumer>
     </>
   );
 };
