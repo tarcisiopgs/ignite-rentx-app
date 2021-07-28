@@ -1,5 +1,6 @@
 export default {
   colors: {
+    secondaryTextDetails: '#AEAEB3',
     secondaryText: '#EBEBF0',
     primaryLight: '#FDEDEF',
     textDetails: '#AEAEB3',

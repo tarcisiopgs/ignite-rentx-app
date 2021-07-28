@@ -1,5 +1,6 @@
 import { Inter_400Regular, Inter_500Medium } from '@expo-google-fonts/inter';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
 import { ThemeProvider } from 'styled-components/native';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
@@ -10,8 +11,8 @@ import {
 } from '@expo-google-fonts/archivo';
 import React from 'react';
 
-import { Home, CarDetails, CarSchedule } from './src/screens';
 import { theme } from './src/styles';
+import Routes from './src/routes';
 
 const App = () => {
   const [fontsLoaded] = useFonts({
@@ -28,9 +29,7 @@ const App = () => {
     return (
       <SafeAreaProvider>
         <ThemeProvider theme={theme}>
-          {/* <Home /> */}
-          {/* <CarDetails /> */}
-          <CarSchedule />
+          <Routes />
         </ThemeProvider>
       </SafeAreaProvider>
     );

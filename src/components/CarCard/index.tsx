@@ -1,5 +1,7 @@
+import { RectButtonProps } from 'react-native-gesture-handler';
 import React from 'react';
 
+import { CarDTO } from '../../dtos';
 import {
   DividerContainer,
   ThumbnailImage,
@@ -8,46 +10,40 @@ import {
   GeneralInfo,
   AddonsInfo,
   EnergyIcon,
+  HybridIcon,
   Container,
   PriceInfo,
   LabelText,
   ValueText,
 } from './styles';
 
-interface PriceData {
-  period: 'day';
-  value: string;
+interface CarCardProps extends RectButtonProps {
+  data: CarDTO;
 }
 
-export interface CarData {
-  fuel: 'energy' | 'gasoline';
-  price: PriceData;
-  brand: string;
-  model: string;
-  image: string;
-}
-
-interface CarCardProps {
-  data: CarData;
-}
-
-const CarCard: React.FC<CarCardProps> = ({ data }) => {
+const CarCard: React.FC<CarCardProps> = ({ data, ...rest }) => {
   return (
-    <Container>
+    <Container {...rest}>
       <GeneralInfo>
         <LabelText>{data.brand}</LabelText>
-        <ValueText>{data.model}</ValueText>
+        <ValueText>{data.name}</ValueText>
         <AddonsInfo>
           <PriceInfo>
-            <LabelText>{data.price.period === 'day' && 'Ao dia'}</LabelText>
-            <ValueText highlighted>{data.price.value}</ValueText>
+            <LabelText>{data.rent.period}</LabelText>
+            <ValueText highlighted>{data.rent.price}</ValueText>
           </PriceInfo>
-          {data.fuel === 'gasoline' ? <GasolineIcon /> : <EnergyIcon />}
+          {data.fuel_type === 'gasoline_motor' ? (
+            <GasolineIcon />
+          ) : data.fuel_type === 'hybrid_motor' ? (
+            <HybridIcon />
+          ) : (
+            <EnergyIcon />
+          )}
         </AddonsInfo>
       </GeneralInfo>
       <DividerContainer />
       <ThumbnailInfo>
-        <ThumbnailImage source={{ uri: data.image }} />
+        <ThumbnailImage source={{ uri: data.thumbnail }} />
       </ThumbnailInfo>
     </Container>
   );

@@ -1,6 +1,7 @@
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { LocaleConfig } from 'react-native-calendars';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { BlockButton } from '../../components';
 import {
@@ -65,6 +66,13 @@ LocaleConfig.locales['pt-br'] = {
 LocaleConfig.defaultLocale = 'pt-br';
 
 const CarSchedule: React.FC = () => {
+  const navigation = useNavigation();
+
+  const handleCarScheduleDetails = useCallback(
+    () => navigation.navigate('CarScheduleDetails'),
+    [navigation],
+  );
+
   return (
     <Container>
       <SafeAreaInsetsContext.Consumer>
@@ -110,8 +118,8 @@ const CarSchedule: React.FC = () => {
           return (
             <Footer bottomInset={insets?.bottom || 0}>
               <BlockButton
+                onPress={handleCarScheduleDetails}
                 title="Confirmar"
-                onPress={() => console.log('oi')}
                 type="attention"
               />
             </Footer>

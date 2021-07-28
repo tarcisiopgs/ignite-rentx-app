@@ -85,7 +85,7 @@ export const CalendarContent = styled.ScrollView.attrs({
 `;
 
 export const BackContent = styled.View.attrs({})`
-  margin: 0 ${responsive.getFinalValue(8)}px ${responsive.getFinalValue(40)}px;
+  margin: 0 0 ${responsive.getFinalValue(40)}px;
   justify-content: flex-start;
   flex-direction: row;
 `;

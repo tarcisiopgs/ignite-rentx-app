@@ -1,23 +1,41 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
+import { useCallback } from 'react';
 
-import { Container, Dots, Dot, CarImageWrapper, CarImage } from './styles';
+import {
+  CarImageWrapper,
+  DotsWrapper,
+  BackButton,
+  Container,
+  BackIcon,
+  CarImage,
+  Dots,
+  Dot,
+} from './styles';
 
-const CarSlider: React.FC = () => {
+interface CarSliderProps {
+  images: string[];
+}
+
+const CarSlider: React.FC<CarSliderProps> = ({ images }) => {
+  const navigation = useNavigation();
+
+  const handleClosePage = useCallback(() => navigation.goBack(), [navigation]);
+
   return (
     <Container>
-      <Dots>
-        <Dot active />
-        <Dot />
-        <Dot />
-        <Dot />
-        <Dot />
-      </Dots>
+      <DotsWrapper>
+        <BackButton onPress={handleClosePage}>
+          <BackIcon />
+        </BackButton>
+        <Dots>
+          {images.map((image, index) => (
+            <Dot active={index === 0} key={index} />
+          ))}
+        </Dots>
+      </DotsWrapper>
       <CarImageWrapper>
-        <CarImage
-          source={{
-            uri: 'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-          }}
-        />
+        <CarImage source={{ uri: [...images].shift() }} />
       </CarImageWrapper>
     </Container>
   );

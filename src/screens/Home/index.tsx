@@ -1,93 +1,52 @@
-import React from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
-import { CarCard, CarData, MainHeader } from '../../components';
+import { CarCard, Loading, MainHeader } from '../../components';
 import { Container, Content, CarList } from './styles';
-
-const cars: CarData[] = [
-  {
-    price: { period: 'day', value: 'R$ 120' },
-    model: 'RS 5 Coupé',
-    fuel: 'gasoline',
-    brand: 'Audi',
-    image:
-      'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-  },
-  {
-    price: { period: 'day', value: 'R$ 120' },
-    model: 'RS 5 Coupé',
-    fuel: 'gasoline',
-    brand: 'Audi',
-    image:
-      'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-  },
-  {
-    price: { period: 'day', value: 'R$ 120' },
-    model: 'RS 5 Coupé',
-    fuel: 'energy',
-    brand: 'Audi',
-    image:
-      'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-  },
-  {
-    price: { period: 'day', value: 'R$ 120' },
-    model: 'RS 5 Coupé',
-    fuel: 'gasoline',
-    brand: 'Audi',
-    image:
-      'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-  },
-  {
-    price: { period: 'day', value: 'R$ 120' },
-    model: 'RS 5 Coupé',
-    fuel: 'gasoline',
-    brand: 'Audi',
-    image:
-      'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-  },
-  {
-    price: { period: 'day', value: 'R$ 120' },
-    model: 'RS 5 Coupé',
-    fuel: 'gasoline',
-    brand: 'Audi',
-    image:
-      'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-  },
-  {
-    price: { period: 'day', value: 'R$ 120' },
-    model: 'RS 5 Coupé',
-    fuel: 'gasoline',
-    brand: 'Audi',
-    image:
-      'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-  },
-  {
-    price: { period: 'day', value: 'R$ 120' },
-    model: 'RS 5 Coupé',
-    fuel: 'gasoline',
-    brand: 'Audi',
-    image:
-      'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-  },
-  {
-    price: { period: 'day', value: 'R$ 120' },
-    model: 'RS 5 Coupé',
-    fuel: 'gasoline',
-    brand: 'Audi',
-    image:
-      'https://img2.gratispng.com/20180628/stg/kisspng-2018-audi-s5-3-0t-premium-plus-coupe-audi-rs5-2017-2018-audi-a5-coupe-5b35130451d959.0738564215302049323353.jpg',
-  },
-];
+import { api } from '../../services';
+import { CarDTO } from '../../dtos';
 
 const Home: React.FC = () => {
+  const navigation = useNavigation();
+  const [cars, setCars] = useState<CarDTO[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const handleCarDetails = useCallback(
+    (car: CarDTO) => navigation.navigate('CarDetails', { car }),
+    [navigation],
+  );
+
+  const fetchCars = async () => {
+    try {
+      const response = await api.get('cars');
+
+      setCars(response.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCars();
+  }, []);
+
   return (
     <Container>
       <MainHeader totalVehiclesSelected={12} />
       <Content>
-        <CarList
-          data={cars}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }: any) => <CarCard data={item} />}
-        />
+        {loading ? (
+          <Loading />
+        ) : (
+          <CarList
+            data={cars}
+            keyExtractor={item => item.id}
+            renderItem={({ item }: any) => (
+              <CarCard onPress={() => handleCarDetails(item)} data={item} />
+            )}
+          />
+        )}
       </Content>
     </Container>
   );

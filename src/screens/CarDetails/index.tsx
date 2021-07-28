@@ -1,7 +1,9 @@
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
-import React from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback } from 'react';
 
 import { BlockButton, CarAddon, CarSlider } from '../../components';
+import { CarDTO } from '../../dtos';
 import {
   ContentHeaderBlock,
   ContentHeaderValue,
@@ -16,41 +18,52 @@ import {
   Footer,
 } from './styles';
 
+interface Params {
+  car: CarDTO;
+}
+
 const CarDetails: React.FC = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  const { car } = route.params as Params;
+
+  console.log(car);
+
+  const handleCarSchedule = useCallback(
+    () => navigation.navigate('CarSchedule'),
+    [navigation],
+  );
+
   return (
     <Container>
       <SafeAreaInsetsContext.Consumer>
         {insets => (
           <Header topInset={insets?.top || 0}>
-            <CarSlider />
+            <CarSlider images={car.photos} />
           </Header>
         )}
       </SafeAreaInsetsContext.Consumer>
       <Content>
         <ContentHeader>
           <ContentHeaderBlock>
-            <ContentHeaderLabel>Lamborghini</ContentHeaderLabel>
-            <ContentHeaderValue>Huracan</ContentHeaderValue>
+            <ContentHeaderLabel>{car.brand}</ContentHeaderLabel>
+            <ContentHeaderValue>{car.name}</ContentHeaderValue>
           </ContentHeaderBlock>
           <ContentHeaderBlock>
-            <ContentHeaderLabel>Ao dia</ContentHeaderLabel>
-            <ContentHeaderValue highlighted>R$ 580</ContentHeaderValue>
+            <ContentHeaderLabel>{car.rent.period}</ContentHeaderLabel>
+            <ContentHeaderValue highlighted>
+              {car.rent.price}
+            </ContentHeaderValue>
           </ContentHeaderBlock>
         </ContentHeader>
         <ContentBody>
           <CarAddons>
-            <CarAddon type="speed" title="380km/h" />
-            <CarAddon type="acceleration" title="3.2s" />
-            <CarAddon type="force" title="800 HP" />
-            <CarAddon type="gasoline" title="Gasolina" />
-            <CarAddon type="exchange" title="Auto" />
-            <CarAddon type="people" title="2 Pessoas" />
+            {car.accessories.map((item, index) => (
+              <CarAddon key={index} type={item.type} title={item.name} />
+            ))}
           </CarAddons>
-          <CarDescription>
-            Este é automóvel desportivo. Surgiu do lendário touro de lide
-            indultado na praça Real Maestranza de Sevilla. É um belíssimo carro
-            para quem gosta de acelerar.
-          </CarDescription>
+          <CarDescription>{car.about}</CarDescription>
         </ContentBody>
       </Content>
       <SafeAreaInsetsContext.Consumer>
@@ -59,7 +72,7 @@ const CarDetails: React.FC = () => {
             <Footer bottomInset={insets?.bottom || 0}>
               <BlockButton
                 title="Escolher período do aluguel"
-                onPress={() => console.log('oi')}
+                onPress={handleCarSchedule}
                 type="attention"
               />
             </Footer>

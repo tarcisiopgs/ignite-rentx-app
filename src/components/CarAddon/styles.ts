@@ -5,6 +5,7 @@ import GasolineSvg from '../../assets/gasoline.svg';
 import ExchangeSvg from '../../assets/exchange.svg';
 import PeopleSvg from '../../assets/people.svg';
 import EnergySvg from '../../assets/energy.svg';
+import HybridSvg from '../../assets/hybrid.svg';
 import SpeedSvg from '../../assets/speed.svg';
 import ForceSvg from '../../assets/force.svg';
 import { responsive } from '../../utils';
@@ -51,6 +52,11 @@ export const PeopleIcon = styled(PeopleSvg).attrs({
 })``;
 
 export const ExchangeIcon = styled(ExchangeSvg).attrs({
+  height: responsive.getFinalValue(28),
+  width: responsive.getFinalValue(28),
+})``;
+
+export const HybridIcon = styled(HybridSvg).attrs({
   height: responsive.getFinalValue(28),
   width: responsive.getFinalValue(28),
 })``;

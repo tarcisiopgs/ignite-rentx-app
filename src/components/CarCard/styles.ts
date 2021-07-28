@@ -1,15 +1,17 @@
+import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 import { TextProps } from 'react-native';
 
 import GasolineSvg from '../../assets/gasoline_light.svg';
 import EnergySvg from '../../assets/energy_light.svg';
+import HybridSvg from '../../assets/hybrid_light.svg';
 import { responsive } from '../../utils';
 
 interface ValueTextProps extends TextProps {
   highlighted?: boolean;
 }
 
-export const Container = styled.View.attrs({})`
+export const Container = styled(RectButton).attrs({})`
   background-color: ${({ theme }) => theme.colors.light};
   margin: 0 0 ${responsive.getFinalValue(16)}px;
   padding: ${responsive.getFinalValue(24)}px;
@@ -67,6 +69,13 @@ export const DividerContainer = styled.View.attrs({})`
 `;
 
 export const GasolineIcon = styled(GasolineSvg).attrs({
+  height: responsive.getFinalValue(26),
+  width: responsive.getFinalValue(26),
+})`
+  margin: 0 0 0 ${responsive.getFinalValue(24)}px;
+`;
+
+export const HybridIcon = styled(HybridSvg).attrs({
   height: responsive.getFinalValue(26),
   width: responsive.getFinalValue(26),
 })`
