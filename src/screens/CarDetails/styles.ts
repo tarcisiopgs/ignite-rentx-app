@@ -26,7 +26,10 @@ export const Header = styled.View.attrs({})<HeaderProps>`
     ${responsive.getFinalValue(24)}px 0;
 `;
 
-export const Content = styled.ScrollView.attrs({})`
+export const Content = styled.ScrollView.attrs({
+  showsHorizontalScrollIndicator: false,
+  showsVerticalScrollIndicator: false,
+})`
   flex: 1;
 `;
 

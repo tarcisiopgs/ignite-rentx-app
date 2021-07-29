@@ -2,9 +2,15 @@ import React, { useEffect, useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { CarCard, Loading, MainHeader } from '../../components';
-import { Container, Content, CarList } from './styles';
 import { api } from '../../services';
 import { CarDTO } from '../../dtos';
+import {
+  MySchedulesButtonIcon,
+  MySchedulesButton,
+  Container,
+  Content,
+  CarList,
+} from './styles';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();
@@ -13,6 +19,11 @@ const Home: React.FC = () => {
 
   const handleCarDetails = useCallback(
     (car: CarDTO) => navigation.navigate('CarDetails', { car }),
+    [navigation],
+  );
+
+  const handleMySchedules = useCallback(
+    () => navigation.navigate('MySchedules'),
     [navigation],
   );
 
@@ -34,7 +45,7 @@ const Home: React.FC = () => {
 
   return (
     <Container>
-      <MainHeader totalVehiclesSelected={12} />
+      <MainHeader totalVehiclesSelected={cars.length} />
       <Content>
         {loading ? (
           <Loading />
@@ -48,6 +59,9 @@ const Home: React.FC = () => {
           />
         )}
       </Content>
+      <MySchedulesButton onPress={handleMySchedules}>
+        <MySchedulesButtonIcon />
+      </MySchedulesButton>
     </Container>
   );
 };

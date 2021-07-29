@@ -5,12 +5,14 @@ import { responsive } from '../../utils';
 
 interface ContainerProps extends RectButtonProps {
   type: 'attention' | 'success';
+  enabled?: boolean;
 }
 
 export const Container = styled(RectButton).attrs({})<ContainerProps>`
   background-color: ${({ theme, type }) =>
     type === 'attention' ? theme.colors.primary : theme.colors.secondary};
   padding: ${responsive.getFinalValue(19)}px;
+  opacity: ${({ enabled = true }) => (enabled ? 1 : 0.5)};
 `;
 
 export const Title = styled.Text.attrs({})`
@@ -20,3 +22,7 @@ export const Title = styled.Text.attrs({})`
   color: ${({ theme }) => theme.colors.light};
   text-align: center;
 `;
+
+export const Spinner = styled.ActivityIndicator.attrs(({ theme }) => ({
+  color: theme.colors.light,
+}))``;

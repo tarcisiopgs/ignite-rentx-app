@@ -1,8 +1,13 @@
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import React, { useCallback } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
+import { format, parseISO } from 'date-fns';
+import { Alert } from 'react-native';
+import lodash from 'lodash';
 
 import { BlockButton, CarAddon, CarSlider } from '../../components';
+import { api } from '../../services';
+import { CarDTO } from '../../dtos';
 import {
   ScheduleDetailsSecondContent,
   ScheduleDetailsSeparate,
@@ -24,61 +29,93 @@ import {
   Footer,
 } from './styles';
 
-const CarScheduleDetails: React.FC = () => {
-  const navigation = useNavigation();
+interface Params {
+  dates: string[];
+  car: CarDTO;
+}
 
-  const handleCarScheduleComplete = useCallback(
-    () => navigation.navigate('CarScheduleComplete'),
-    [navigation],
-  );
+const CarScheduleDetails: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  const { car, dates } = route.params as Params;
+
+  const handleCarScheduleComplete = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const response = await api.get(`schedules_bycars/${car.id}`);
+
+      await api.post(`schedules_byuser`, { car, user_id: 1, dates });
+
+      await api.put(`schedules_bycars/${car.id}`, {
+        id: car.id,
+        unavailable_dates: [...response.data.unavailable_dates, ...dates],
+      });
+
+      navigation.navigate('CarScheduleComplete');
+    } catch (e) {
+      console.log(e.response);
+
+      Alert.alert('Não foi possível realizar o seu agendamento.');
+    } finally {
+      setLoading(false);
+    }
+  }, [navigation]);
 
   return (
     <Container>
       <SafeAreaInsetsContext.Consumer>
         {insets => (
           <Header topInset={insets?.top || 0}>
-            <CarSlider />
+            <CarSlider images={car.photos} />
           </Header>
         )}
       </SafeAreaInsetsContext.Consumer>
       <Content>
         <ContentHeader>
           <ContentHeaderBlock>
-            <ContentHeaderLabel>Lamborghini</ContentHeaderLabel>
-            <ContentHeaderValue>Huracan</ContentHeaderValue>
+            <ContentHeaderLabel>{car.brand}</ContentHeaderLabel>
+            <ContentHeaderValue>{car.name}</ContentHeaderValue>
           </ContentHeaderBlock>
           <ContentHeaderBlock>
-            <ContentHeaderLabel>Ao dia</ContentHeaderLabel>
-            <ContentHeaderValue highlighted>R$ 580</ContentHeaderValue>
+            <ContentHeaderLabel>{car.rent.period}</ContentHeaderLabel>
+            <ContentHeaderValue highlighted>
+              R$ {car.rent.price}
+            </ContentHeaderValue>
           </ContentHeaderBlock>
         </ContentHeader>
         <ContentBody>
           <CarAddons>
-            <CarAddon type="speed" title="380km/h" />
-            <CarAddon type="acceleration" title="3.2s" />
-            <CarAddon type="force" title="800 HP" />
-            <CarAddon type="gasoline" title="Gasolina" />
-            <CarAddon type="exchange" title="Auto" />
-            <CarAddon type="people" title="2 Pessoas" />
+            {car.accessories.map((item, index) => (
+              <CarAddon key={index} type={item.type} title={item.name} />
+            ))}
           </CarAddons>
           <ScheduleDetailsContent>
             <ScheduleDetailsIcon />
             <ScheduleDetailsBlock>
               <ScheduleDetailsLabel>De</ScheduleDetailsLabel>
-              <ScheduleDetailsValue>18/06/2021</ScheduleDetailsValue>
+              <ScheduleDetailsValue>
+                {format(parseISO(lodash.first(dates)!), 'dd/MM/yyyy')}
+              </ScheduleDetailsValue>
             </ScheduleDetailsBlock>
             <ScheduleDetailsSeparate />
             <ScheduleDetailsBlock>
               <ScheduleDetailsLabel>Até</ScheduleDetailsLabel>
-              <ScheduleDetailsValue>20/06/2021</ScheduleDetailsValue>
+              <ScheduleDetailsValue>
+                {format(parseISO(lodash.last(dates)!), 'dd/MM/yyyy')}
+              </ScheduleDetailsValue>
             </ScheduleDetailsBlock>
           </ScheduleDetailsContent>
           <ScheduleDetailsSecondContent>
             <ScheduleDetailsBlock>
               <ScheduleDetailsLabel>Total</ScheduleDetailsLabel>
-              <ScheduleDetailsValue>R$ 580 x3 diárias</ScheduleDetailsValue>
+              <ScheduleDetailsValue>
+                R$ {car.rent.price} x{dates.length} diárias
+              </ScheduleDetailsValue>
             </ScheduleDetailsBlock>
-            <ScheduleTotal>R$ 2.900</ScheduleTotal>
+            <ScheduleTotal>R$ {car.rent.price * dates.length}</ScheduleTotal>
           </ScheduleDetailsSecondContent>
         </ContentBody>
       </Content>
@@ -89,6 +126,8 @@ const CarScheduleDetails: React.FC = () => {
               <BlockButton
                 onPress={handleCarScheduleComplete}
                 title="Alugar agora"
+                enabled={!loading}
+                loading={loading}
                 type="success"
               />
             </Footer>

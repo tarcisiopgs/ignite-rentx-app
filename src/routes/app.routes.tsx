@@ -1,10 +1,11 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 
 import {
   CarScheduleComplete,
   CarScheduleDetails,
   CarSchedule,
+  MySchedules,
   CarDetails,
   Home,
 } from '../screens';
@@ -17,6 +18,7 @@ const AppRoutes = () => {
       <Screen name="CarScheduleComplete" component={CarScheduleComplete} />
       <Screen name="CarScheduleDetails" component={CarScheduleDetails} />
       <Screen name="CarSchedule" component={CarSchedule} />
+      <Screen name="MySchedules" component={MySchedules} />
       <Screen name="CarDetails" component={CarDetails} />
       <Screen name="Home" component={Home} />
     </Navigator>

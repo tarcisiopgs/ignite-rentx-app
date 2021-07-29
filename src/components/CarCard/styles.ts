@@ -1,4 +1,4 @@
-import { RectButton } from 'react-native-gesture-handler';
+import { RectButton, RectButtonProps } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 import { TextProps } from 'react-native';
 
@@ -11,9 +11,15 @@ interface ValueTextProps extends TextProps {
   highlighted?: boolean;
 }
 
-export const Container = styled(RectButton).attrs({})`
+interface ContainerProps extends RectButtonProps {
+  withoutMarginBottom?: boolean;
+}
+
+export const Container = styled(RectButton).attrs({})<ContainerProps>`
   background-color: ${({ theme }) => theme.colors.light};
-  margin: 0 0 ${responsive.getFinalValue(16)}px;
+  margin: 0 0
+    ${({ withoutMarginBottom }) =>
+      withoutMarginBottom ? 0 : responsive.getFinalValue(16)}px;
   padding: ${responsive.getFinalValue(24)}px;
   flex-direction: row;
 `;

@@ -79,6 +79,8 @@ export const Footer = styled.View.attrs({})<FooterProps>`
 
 export const CalendarContent = styled.ScrollView.attrs({
   contentContainerStyle: { padding: responsive.getFinalValue(10) },
+  showsHorizontalScrollIndicator: false,
+  showsVerticalScrollIndicator: false,
 })`
   background-color: ${({ theme }) => theme.colors.light};
   flex: 1;
@@ -116,6 +118,7 @@ export const PeriodCalendar = styled(Calendar).attrs(({ theme }) => ({
     textDayFontFamily: theme.fonts.primary.regular,
     monthTextColor: theme.colors.title,
   },
+  markingType: 'period',
   minDate: new Date(),
   firstDay: 1,
 }))``;

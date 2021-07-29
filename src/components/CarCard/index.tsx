@@ -18,19 +18,24 @@ import {
 } from './styles';
 
 interface CarCardProps extends RectButtonProps {
+  withoutMarginBottom?: boolean;
   data: CarDTO;
 }
 
-const CarCard: React.FC<CarCardProps> = ({ data, ...rest }) => {
+const CarCard: React.FC<CarCardProps> = ({
+  withoutMarginBottom,
+  data,
+  ...rest
+}) => {
   return (
-    <Container {...rest}>
+    <Container withoutMarginBottom={withoutMarginBottom} {...rest}>
       <GeneralInfo>
         <LabelText>{data.brand}</LabelText>
         <ValueText>{data.name}</ValueText>
         <AddonsInfo>
           <PriceInfo>
             <LabelText>{data.rent.period}</LabelText>
-            <ValueText highlighted>{data.rent.price}</ValueText>
+            <ValueText highlighted>R$ {data.rent.price}</ValueText>
           </PriceInfo>
           {data.fuel_type === 'gasoline_motor' ? (
             <GasolineIcon />

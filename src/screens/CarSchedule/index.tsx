@@ -1,9 +1,13 @@
+import { addDays, eachDayOfInterval, format, parseISO } from 'date-fns';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { LocaleConfig } from 'react-native-calendars';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useTheme } from 'styled-components';
+import lodash from 'lodash';
 
 import { BlockButton } from '../../components';
+import { CarDTO } from '../../dtos';
 import {
   PeriodCalendarArrowRight,
   PeriodCalendarArrowLeft,
@@ -65,12 +69,88 @@ LocaleConfig.locales['pt-br'] = {
 
 LocaleConfig.defaultLocale = 'pt-br';
 
-const CarSchedule: React.FC = () => {
-  const navigation = useNavigation();
+interface MarkedDateProps {
+  [date: string]: {
+    disableTouchEvent?: boolean;
+    disabled?: boolean;
+    textColor: string;
+    color: string;
+  };
+}
 
-  const handleCarScheduleDetails = useCallback(
-    () => navigation.navigate('CarScheduleDetails'),
-    [navigation],
+interface DayProps {
+  dateString: string;
+  timestamp: number;
+  month: number;
+  year: number;
+  day: number;
+}
+
+interface Params {
+  car: CarDTO;
+}
+
+const CarSchedule: React.FC = () => {
+  const [lastSelectedDate, setLastSelectedDate] = useState<DayProps>(
+    {} as DayProps,
+  );
+  const [markedDates, setMarkedDates] = useState<MarkedDateProps>(
+    {} as MarkedDateProps,
+  );
+  const navigation = useNavigation();
+  const theme = useTheme();
+  const route = useRoute();
+
+  const { car } = route.params as Params;
+
+  const handleCarScheduleDetails = useCallback(() => {
+    if (lodash.keys(markedDates).length > 0) {
+      navigation.navigate('CarScheduleDetails', {
+        dates: lodash.keys(markedDates),
+        car,
+      });
+    }
+  }, [navigation, markedDates, car]);
+
+  const handleClosePage = useCallback(() => navigation.goBack(), [navigation]);
+
+  const handleChangeDate = useCallback(
+    (date: DayProps) => {
+      let start = !lastSelectedDate.timestamp ? date : lastSelectedDate;
+      let interval: MarkedDateProps = {};
+      let end = date;
+
+      if (start.timestamp > end.timestamp) {
+        start = end;
+        end = start;
+      }
+
+      setLastSelectedDate(end);
+
+      eachDayOfInterval({
+        start: new Date(start.timestamp),
+        end: new Date(end.timestamp),
+      }).forEach(item => {
+        const date = format(addDays(item, 1), 'yyyy-MM-dd');
+
+        interval = {
+          ...interval,
+          [date]: {
+            color:
+              start.dateString === date || end.dateString === date
+                ? theme.colors.primary
+                : theme.colors.primaryLight,
+            textColor:
+              start.dateString === date || end.dateString === date
+                ? theme.colors.primaryLight
+                : theme.colors.primary,
+          },
+        };
+      });
+
+      setMarkedDates(interval);
+    },
+    [lastSelectedDate],
   );
 
   return (
@@ -79,7 +159,7 @@ const CarSchedule: React.FC = () => {
         {insets => (
           <PeriodContent topInset={insets?.top || 0}>
             <BackContent>
-              <BackButton onPress={() => console.log('oi 2')}>
+              <BackButton onPress={handleClosePage}>
                 <BackIcon />
               </BackButton>
             </BackContent>
@@ -87,15 +167,31 @@ const CarSchedule: React.FC = () => {
               {'Escolha uma\ndata de início e\nfim do aluguel'}
             </PeriodTitle>
             <PeriodValues>
-              <PeriodValueBlock selected>
+              <PeriodValueBlock
+                selected={!!lodash.first(lodash.keys(markedDates))}
+              >
                 <PeriodValueLabel>De</PeriodValueLabel>
-                <PeriodValueSelected>18/06/2021</PeriodValueSelected>
+                <PeriodValueSelected>
+                  {!!lodash.first(lodash.keys(markedDates))
+                    ? format(
+                        parseISO(lodash.first(lodash.keys(markedDates))!),
+                        'dd/MM/yyyy',
+                      )
+                    : null}
+                </PeriodValueSelected>
               </PeriodValueBlock>
               <PeriodValueArrowRight />
-              <PeriodValueBlock selected={false}>
+              <PeriodValueBlock
+                selected={!!lodash.last(lodash.keys(markedDates))}
+              >
                 <PeriodValueLabel>Até</PeriodValueLabel>
                 <PeriodValueSelected>
-                  {true ? '' : '18/06/2021'}
+                  {!!lodash.last(lodash.keys(markedDates))
+                    ? format(
+                        parseISO(lodash.last(lodash.keys(markedDates))!),
+                        'dd/MM/yyyy',
+                      )
+                    : null}
                 </PeriodValueSelected>
               </PeriodValueBlock>
             </PeriodValues>
@@ -104,6 +200,7 @@ const CarSchedule: React.FC = () => {
       </SafeAreaInsetsContext.Consumer>
       <CalendarContent>
         <PeriodCalendar
+          markedDates={markedDates}
           renderArrow={direction =>
             direction === 'left' ? (
               <PeriodCalendarArrowLeft />
@@ -111,6 +208,7 @@ const CarSchedule: React.FC = () => {
               <PeriodCalendarArrowRight />
             )
           }
+          onDayPress={handleChangeDate}
         />
       </CalendarContent>
       <SafeAreaInsetsContext.Consumer>
@@ -118,6 +216,7 @@ const CarSchedule: React.FC = () => {
           return (
             <Footer bottomInset={insets?.bottom || 0}>
               <BlockButton
+                enabled={lodash.keys(markedDates).length > 0}
                 onPress={handleCarScheduleDetails}
                 title="Confirmar"
                 type="attention"

@@ -28,11 +28,9 @@ const CarDetails: React.FC = () => {
 
   const { car } = route.params as Params;
 
-  console.log(car);
-
   const handleCarSchedule = useCallback(
-    () => navigation.navigate('CarSchedule'),
-    [navigation],
+    () => navigation.navigate('CarSchedule', { car }),
+    [navigation, car],
   );
 
   return (
@@ -53,7 +51,7 @@ const CarDetails: React.FC = () => {
           <ContentHeaderBlock>
             <ContentHeaderLabel>{car.rent.period}</ContentHeaderLabel>
             <ContentHeaderValue highlighted>
-              {car.rent.price}
+              R$ {car.rent.price}
             </ContentHeaderValue>
           </ContentHeaderBlock>
         </ContentHeader>
