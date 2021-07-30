@@ -88,13 +88,7 @@ const CarDetails: React.FC = () => {
               <CarAddon key={index} type={item.type} title={item.name} />
             ))}
           </CarAddons>
-          <CarDescription>
-            {car.about}
-            {car.about}
-            {car.about}
-            {car.about}
-            {car.about}
-          </CarDescription>
+          <CarDescription>{car.about}</CarDescription>
         </ContentBody>
       </Content>
       <SafeAreaInsetsContext.Consumer>
