@@ -112,7 +112,8 @@ const CarScheduleDetails: React.FC = () => {
             <ScheduleDetailsBlock>
               <ScheduleDetailsLabel>Total</ScheduleDetailsLabel>
               <ScheduleDetailsValue>
-                R$ {car.rent.price} x{dates.length} diárias
+                R$ {car.rent.price} x{dates.length}{' '}
+                {dates.length === 1 ? 'diária' : 'diárias'}
               </ScheduleDetailsValue>
             </ScheduleDetailsBlock>
             <ScheduleTotal>R$ {car.rent.price * dates.length}</ScheduleTotal>
@@ -120,19 +121,17 @@ const CarScheduleDetails: React.FC = () => {
         </ContentBody>
       </Content>
       <SafeAreaInsetsContext.Consumer>
-        {insets => {
-          return (
-            <Footer bottomInset={insets?.bottom || 0}>
-              <BlockButton
-                onPress={handleCarScheduleComplete}
-                title="Alugar agora"
-                enabled={!loading}
-                loading={loading}
-                type="success"
-              />
-            </Footer>
-          );
-        }}
+        {insets => (
+          <Footer bottomInset={insets?.bottom || 0}>
+            <BlockButton
+              onPress={handleCarScheduleComplete}
+              title="Alugar agora"
+              enabled={!loading}
+              loading={loading}
+              type="success"
+            />
+          </Footer>
+        )}
       </SafeAreaInsetsContext.Consumer>
     </Container>
   );

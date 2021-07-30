@@ -1,5 +1,5 @@
-import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { TextProps, ViewProps } from 'react-native';
+import Animated from 'react-native-reanimated';
 import styled from 'styled-components/native';
 
 import { responsive } from '../../utils';
@@ -26,7 +26,7 @@ export const Header = styled.View.attrs({})<HeaderProps>`
     ${responsive.getFinalValue(24)}px 0;
 `;
 
-export const Content = styled.ScrollView.attrs({
+export const Content = styled(Animated.ScrollView).attrs({
   showsHorizontalScrollIndicator: false,
   showsVerticalScrollIndicator: false,
 })`
@@ -88,3 +88,5 @@ export const Footer = styled.View.attrs({})<FooterProps>`
   padding: ${responsive.getFinalValue(24)}px ${responsive.getFinalValue(24)}px
     ${({ bottomInset }) => responsive.getFinalValue(24 + bottomInset)}px;
 `;
+
+export const AnimatedView = styled(Animated.View).attrs({})``;
