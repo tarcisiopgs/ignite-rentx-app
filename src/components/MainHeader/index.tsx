@@ -7,9 +7,13 @@ import { Container, LogoIcon, TotalVehiclesText } from './styles';
 
 interface MainHeaderProps {
   totalVehiclesSelected: number;
+  loading: boolean;
 }
 
-const MainHeader: React.FC<MainHeaderProps> = ({ totalVehiclesSelected }) => {
+const MainHeader: React.FC<MainHeaderProps> = ({
+  totalVehiclesSelected,
+  loading,
+}) => {
   const theme = useTheme();
 
   return (
@@ -19,10 +23,12 @@ const MainHeader: React.FC<MainHeaderProps> = ({ totalVehiclesSelected }) => {
         {insets => (
           <Container topInset={insets?.top || 0}>
             <LogoIcon />
-            <TotalVehiclesText>
-              Total de {totalVehiclesSelected}{' '}
-              {totalVehiclesSelected === 1 ? 'carro' : 'carros'}
-            </TotalVehiclesText>
+            {!loading && (
+              <TotalVehiclesText>
+                Total de {totalVehiclesSelected}{' '}
+                {totalVehiclesSelected === 1 ? 'carro' : 'carros'}
+              </TotalVehiclesText>
+            )}
           </Container>
         )}
       </SafeAreaInsetsContext.Consumer>

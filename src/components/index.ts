@@ -1,3 +1,4 @@
+import CustomLoading from './CustomLoading';
 import BlockButton from './BlockButton';
 import InnerHeader from './InnerHeader';
 import MainHeader from './MainHeader';
@@ -7,6 +8,7 @@ import Loading from './Loading';
 import CarCard from './CarCard';
 
 export {
+  CustomLoading,
   BlockButton,
   InnerHeader,
   MainHeader,

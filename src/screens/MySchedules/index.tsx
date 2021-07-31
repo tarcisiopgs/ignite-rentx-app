@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { format, parseISO } from 'date-fns';
 import lodash from 'lodash';
 
-import { CarCard, Loading } from '../../components';
+import { CarCard, CustomLoading } from '../../components';
 import { api } from '../../services';
 import {
   SchedulePeriodArrow,
@@ -69,7 +69,7 @@ const MySchedules: React.FC = () => {
       </SafeAreaInsetsContext.Consumer>
       <Content>
         {loading ? (
-          <Loading />
+          <CustomLoading />
         ) : (
           <>
             <ListHeader>
